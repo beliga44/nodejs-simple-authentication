@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-require('../models/User');
-const User = mongoose.model('User');
+const User = require('../models/User');
 
-/* GET home page. */
+/* GET */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'WELCOME',header: 'Home',state: req.session.state});
 });
@@ -21,6 +20,14 @@ router.get('/home',(req,res,next) => {
   res.render('home');
 });
 
+router.get('/logout',(req,res,next)=>{
+  if(req.session){
+    req.session.destroy((err)=>{
+      
+    });
+  }
+});
+
 /* POST.*/
 router.post('/register',(req,res,next) => {
   var userData = {
@@ -28,58 +35,49 @@ router.post('/register',(req,res,next) => {
     password:req.body.password
   }
 
-  // let _email = req.body.email;
-  // let _password = req.body.password;
-  // let _rePassword = req.body.repassword;
-  
-  // if(email.length != 0 && password.length != 0){
-  //   res.redirect('/');
-  //   req.session.destroy((err)=>{});    
-  // }else{
-  //   req.session.state = 'Error';
-  //   res.redirect('register');
-  // }
+  if(userData.email && userData.password){
+    // Cara pertama untuk insert
+    /*  
+    var user = new User({
+      email:userData.email,
+      password:userData.password
+    });
+    user.save((err)=>{
+      if(err){}
+      else{
+        res.redirect('/');
+      }
+    });
+    */
 
-  // Cara pertama untuk insert
-  // var user = new User({
-  //   email:_email,
-  //   password:_password
-  // });
-  // user.save((err)=>{
-  //   if(err){}
-  //   else{
-  //     res.redirect('/');
-  //   }
-  // });
+    // Cara kedua untuk insert
+    User.create(userData,(err,user)=>{
+      if(err) next(err);
+      else{
+        req.session.userId = user._id;
+        res.redirect('/');
+      }
+    });
+  }else{
+    res.redirect('/register');  
+  }
+});
+
+router.post('/login',(req,res,next) => {
+  let email = req.body.email;
+  let password = req.body.password;
   
-  // Cara kedua untuk insert
-  User.create(userData,(err,user)=>{
-    if(err){
-      next(err);
-    }
-    else{
+  User.authenticate(email,password,(err,user)=>{
+    if(err) {
+      var err = new Error('Wrong email or password.');
+      err.status = 401;
+      return next(err);
+    }else {
+      console.log('Login success');
       req.session.userId = user._id;
       res.redirect('/');
     }
   });
-});
-
-router.post('/login',(req,res,next) => {
-  let _email = req.body.email;
-  let _password = req.body.password;
-  User.find({email:_email,password:_password}).
-      where('email').equals(_email).
-      where('password').equals(_password).
-      select('email password').
-      exec((err,user) => {
-        if(err) res.redirect('/');
-        else {
-          if(user.length == 0)res.send('User not found !');
-          else{
-            res.redirect('/home');
-          }
-        }
-      });
 });
 
 module.exports = router;

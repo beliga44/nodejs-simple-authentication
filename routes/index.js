@@ -5,11 +5,13 @@ const User = require('../models/User');
 
 /* GET */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'WELCOME',header: 'Home',state: req.session.state});
+  res.render('index', { title: 'WELCOME',
+                        header: 'Home',
+                        auth:req.session.userId});
 });
 
 router.get('/register',(req,res,next) => {
-  res.render('register',{state:req.session.state});
+  res.render('register');
 });
 
 router.get('/login',(req,res,next) => {
@@ -23,7 +25,10 @@ router.get('/home',(req,res,next) => {
 router.get('/logout',(req,res,next)=>{
   if(req.session){
     req.session.destroy((err)=>{
-      
+      if(err) return next(err);
+
+      console.log("Logout success");
+      res.redirect('/');
     });
   }
 });

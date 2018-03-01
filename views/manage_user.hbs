@@ -1,0 +1,49 @@
+<style>
+    ul,li{
+        list-style: none;
+    }
+    
+    .header{
+        color: darksalmon;
+    }
+
+    p{
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .container-list{
+        width: 30%;
+    }
+
+    .container-th,.container-data{
+        display: flex;
+    }
+
+    .container-th li{
+        font-size: 16px;
+        font-weight: 600;   
+    }
+
+    a{
+        text-decoration: none;
+    }
+
+</style>
+<h1 class="header">Manage User</h1>
+<div class="container-list">
+    <ul class="container-th">
+        <li style="margin-right:auto;">Email</li>
+        <li>Manage</li>
+    </ul>
+
+    {{#each users}}
+    <ul class="container-data">
+        <li class="email" style="margin-right:auto;">{{this.email}}</li>
+        <li>
+            <a href="/manage/user/{{this._id}}">Edit</a>
+            <a href="/manage/user/delete/{{this._id}}">Delete</a>
+        </li>
+    </ul>
+    {{/each}}
+</div>

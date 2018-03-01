@@ -1,18 +1,20 @@
 <h1>{{title}}</h1>
 <p>Welcome to {{header}}</p>
 {{{succcessRegister}}}
-{{#if state}}
-    <p>Welcome coi</p>
-{{else}}
-    <ul>
+<ul>
+    {{#if auth}}
+        <li>
+            <a href="/manage/user">Manage User</a>
+        </li>
+        <li>
+            <a href="/logout">Logout</a>
+        </li>
+    {{else}}
         <li>
             <a href="/login">Login</a>
         </li>
         <li>
             <a href="/register">Register</a>
         </li>
-        <li>
-            <a href="/logout">Logout</a>
-        </li>
-    </ul>
-{{/if}}
+    {{/if}}
+</ul>

@@ -11,6 +11,7 @@ var mongoose = require('mongoose');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var manages = require('./routes/manages');
 var modelTest = require('./models/User');
 
 var mongoDB = 'mongodb://127.0.0.1/Belajar';
@@ -44,13 +45,9 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// fs.readdirSync(models)
-//   .filter(file => ~file.search(/^[^\.].*\.js$/))
-//   .forEach(file => require(join(models, file)));
-
 app.use('/', index);
 app.use('/users', users);
-
+app.use('/manage',manages);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
